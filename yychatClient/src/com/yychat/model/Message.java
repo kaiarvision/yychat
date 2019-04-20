@@ -31,5 +31,8 @@ public class Message implements Serializable,MessageType{
 	}
 	public void setMessageType(String messageType) {
 		this.messageType = messageType;
-	}	
+	}
+	
+	
+	
 }

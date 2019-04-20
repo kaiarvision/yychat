@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.HashMap;
 
 import javax.swing.*;
 
@@ -12,6 +16,8 @@ import com.yychat.model.Message;
 import com.yychat.model.User;
 //1、在类中实现动作监听器接口
 public class ClientLogin extends JFrame implements ActionListener{//类名：ClientLogin,继承
+	public static HashMap hmFriendList=new HashMap<String,FriendList>();
+
 	//北部的组件
 	JLabel jlbl1;
 	
@@ -62,7 +68,7 @@ public class ClientLogin extends JFrame implements ActionListener{//类名：Client
 		this.add(jp1,"South");
 		
 		this.setSize(350,240);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//用途
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);//用途？
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);	
 		
@@ -83,7 +89,28 @@ public class ClientLogin extends JFrame implements ActionListener{//类名：Client
 			//密码验证，密码是123456验证成功，否则验证失败
 			Message mess=new ClientConnetion().loginValidate(user);
 			if(mess.getMessageType().equals(Message.message_LoginSuccess)){
-				new FriendList(userName);
+				FriendList friendList=new FriendList(userName);
+				
+				hmFriendList.put(userName,friendList);
+				
+				//第1步
+				//发送message_RequestOnlineFriend信息给服务器
+				Message mess1=new Message();
+				mess1.setSender(userName);
+				mess1.setReceiver("Server");
+				mess1.setMessageType(Message.message_RequestOnlineFriend);
+				Socket s=(Socket)ClientConnetion.hmSocket.get(userName);
+				ObjectOutputStream oos;
+				try{
+					oos=new ObjectOutputStream(s.getOutputStream());
+					oos.writeObject(mess1);
+				} catch (IOException e ){
+					e.printStackTrace();
+				}
+				
+				
+				
+				
 				this.dispose();
 			}else{
 				JOptionPane.showMessageDialog(this, "密码错误");

@@ -56,6 +56,9 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 		myFriendListJPanel=new JPanel(new GridLayout(MYFRIENDCOUNT-1,1));//网格布局
 		for(int i=1;i<MYFRIENDCOUNT;i++){
 			myFriendJLabel[i]=new JLabel(i+"",new ImageIcon("images/duck.gif"),JLabel.LEFT);
+			myFriendJLabel[i].setEnabled(false);
+			if(Integer.parseInt(userName)==i) myFriendJLabel[i].setEnabled(true);
+			//myFriendJLabel[Integer.parseInt(userName)].setEnabled(true);
 			myFriendJLabel[i].addMouseListener(this);
 			myFriendListJPanel.add(myFriendJLabel[i]);
 		}
@@ -97,7 +100,7 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 		this.add(myFriendPanel,"1");		
 		this.add(myStrangerPanel,"2");
 		
-		this.setSize(350,500);
+		this.setSize(150,500);
 		this.setTitle(userName+"的好友列表");
 		this.setIconImage(new ImageIcon("images/duck2.gif").getImage());
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -108,7 +111,13 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 	public static void main(String[] args) {
 		//FriendList friendList=new FriendList("pdh");
 	}
-
+	public void setEnabledOnlineFriend(String onlineFriend){
+	String[] friendName=onlineFriend.split(" ");
+	int count=friendName.length;
+	for(int i=0;i<count;i++){
+		myFriendJLabel[Integer.parseInt(friendName[i])].setEnabled(true);
+	}
+	}
 	@Override
 	public void actionPerformed(ActionEvent e) {//响应事件的方法
 		if(e.getSource()==myStrangerButton) cardLayout.show(this.getContentPane(), "2");
@@ -122,12 +131,16 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 			String receiver=jlbl.getText();
 			//new FriendChat(this.userName,receiver);
 			//new Thread(new FriendChat(this.userName,receiver)).start();
+			
+			//怎么解决好友聊天界面不重复创建的问题？
+			//思路：要在hmFriendChat1里面查找有没有该对象，有的话不创建，没有才新建。
 			FriendChat1 friendChat1=(FriendChat1)hmFriendChat1.get(userName+"to"+receiver);
 			if(friendChat1==null){
-				friendChat1=new FriendChat1(this.userName,receiver);
-				hmFriendChat1.put(userName+"to"+receiver,friendChat1);
+				friendChat1=new FriendChat1(this.userName,receiver);//对象名friendChat1可以引用我们创建的对象
+				hmFriendChat1.put(userName+"to"+receiver, friendChat1);
 			}else{
 				friendChat1.setVisible(true);
+				System.out.println("test!");
 			}			
 		}		
 	}
