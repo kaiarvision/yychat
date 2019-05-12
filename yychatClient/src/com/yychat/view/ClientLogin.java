@@ -16,8 +16,7 @@ import com.yychat.model.Message;
 import com.yychat.model.User;
 //1、在类中实现动作监听器接口
 public class ClientLogin extends JFrame implements ActionListener{//类名：ClientLogin,继承
-	public static HashMap hmFriendList=new HashMap<String,FriendList>();
-
+	public static HashMap hmFriendList=new HashMap<String,FriendList>();//定义保存FriejdList对象的HashMap
 	//北部的组件
 	JLabel jlbl1;
 	
@@ -81,7 +80,7 @@ public class ClientLogin extends JFrame implements ActionListener{//类名：Client
 	@Override
 	public void actionPerformed(ActionEvent arg0) {//3、添加事件处理代码
 		if(arg0.getSource()==jb1) {
-			String userName=jtf1.getText();
+			String userName=jtf1.getText(); 
 			String passWord=new String(jpf1.getPassword());
 			User user=new User();
 			user.setUserName(userName);
@@ -90,11 +89,10 @@ public class ClientLogin extends JFrame implements ActionListener{//类名：Client
 			Message mess=new ClientConnetion().loginValidate(user);
 			if(mess.getMessageType().equals(Message.message_LoginSuccess)){
 				FriendList friendList=new FriendList(userName);
+				//保存FriendList
+				hmFriendList.put(userName, friendList);
 				
-				hmFriendList.put(userName,friendList);
-				
-				//第1步
-				//发送message_RequestOnlineFriend信息给服务器
+				//第一步：
 				Message mess1=new Message();
 				mess1.setSender(userName);
 				mess1.setReceiver("Server");
@@ -104,12 +102,9 @@ public class ClientLogin extends JFrame implements ActionListener{//类名：Client
 				try{
 					oos=new ObjectOutputStream(s.getOutputStream());
 					oos.writeObject(mess1);
-				} catch (IOException e ){
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
-				
-				
-				
 				
 				this.dispose();
 			}else{

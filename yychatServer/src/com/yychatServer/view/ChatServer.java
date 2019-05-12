@@ -5,9 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-import com.chatserver.controller.StartServer;
-
-
+import controller.StartServer;
 
 public class ChatServer extends JFrame implements ActionListener{//实现接口
 	JButton jb1;
@@ -40,11 +38,7 @@ public class ChatServer extends JFrame implements ActionListener{//实现接口
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		StartServer myServer;
-		if(arg0.getSource()==jb1) myServer=new StartServer();//监听端口，建立和客户端的连接
-		if(arg0.getSource()==jb2) System.exit(0);//退出程序
-		
-		
+		new StartServer();		
 	}
 
 }
